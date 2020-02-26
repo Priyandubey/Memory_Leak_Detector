@@ -87,4 +87,29 @@ extern "C" void free(void* ptr){
     }
 }
 
+void compile_allocation(){
 
+    isExternalSource = false;
+    if(allocations.empty()){
+        cout << "leakfinder found no leaks, not one of the " << allocation_count;
+        cout << " allocations was not released." << endl;
+    }
+    else{
+        cout << "leakfinder detected that " << allocations.size();
+        cout << " out of " << allocation_count << " allocations was not released." << endl;
+        for(int i = 0;i < allocations.size();i++){
+            allocation_info allocation = allocations[i];
+            cout << "Leak " << (i+1) << "@0x" << hex << allocation.get_thread_id() << dec;
+            cout << "; leaked " << allocation.get_size() << " bytes at position 0x";
+            cout << hex << allocation.get_address() << dec << endl;
+
+            vector<string> stacktrace = allocation.get_stacktrace();
+            for (int j = 0; j < stacktrace.size(); ++j)
+            {
+                cout << "\t" << stacktrace[j] << endl;
+            }
+
+        }
+    }
+
+}
