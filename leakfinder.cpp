@@ -36,7 +36,7 @@ static void initialize_functions(void){
         cerr<<"leakfinder failed to read free functions; "<< dlerror()<<endl;
     }
 }
-extern "C" void malloc(size_t size){
+extern "C" void* malloc(size_t size){
 
     if(sys_malloc == 0)
     initialize_functions();
@@ -65,3 +65,26 @@ extern "C" void malloc(size_t size){
     return ptr;
 
 }
+extern "C" void free(void* ptr){
+    if(sys_free)
+    initialize_functions();
+    allocation_info::address_type address = reinterpret_cast<allocation_info::address_type>(ptr);
+    sys_free(ptr);
+    if(isExternalSource){
+        pthread_mutex_lock(&cs_mutex);
+
+        isExternalSource = false;
+
+        for(int i = 0;i < allocations.size();i++){
+            allocation_info allocation = allocations[i];
+            if(allocation.get_address == address){
+                allocations.erase(allocation.begin() + i);
+                break;
+            }
+        }
+        isExternalSource = true;
+        pthread_mutex_unlock(&cs_mutex);
+    }
+}
+
+
