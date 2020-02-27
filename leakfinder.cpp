@@ -22,7 +22,6 @@ static pthread_mutex_t cs_mutex = PTHREAD_MUTEX_INITIALIZER;
 static size_t allocation_count = 0;
 static vector<allocation_info> allocations;
 
-static const size_t max_frame_depth = 128;
 static bool isExternalSource = true;
 static void* (*sys_malloc)(size_t) = 0;
 static void (*sys_free)(void*) = 0;
@@ -52,16 +51,11 @@ extern "C" void* malloc(size_t size)
         isExternalSource = false;
         
         ++allocation_count;
-        
-        void* frames[max_frame_depth];
-        size_t stack_size = backtrace(frames, max_frame_depth);
-        char** stacktrace = backtrace_symbols(frames, stack_size);
-        allocation_info allocation(ptr, size, stacktrace, stack_size, thread_id);
+
+        allocation_info allocation(ptr, size, thread_id);
 
         allocations.push_back(allocation);
      
-        sys_free(stacktrace);
-
         isExternalSource = true;
 
         pthread_mutex_unlock(&cs_mutex);
@@ -116,12 +110,7 @@ void compile_allocation()
             cout << "Leak " << (i+1) << "@0x" << hex << allocation.get_thread_id() << dec;
             cout << "; leaked " << allocation.get_size() << " bytes at position 0x"; 
             cout << hex << allocation.get_address() << dec << endl; 
-            
-            vector<string> stacktrace = allocation.get_stacktrace();
-            for (int j = 0; j < stacktrace.size(); ++j)
-            {
-                cout << "\t" << stacktrace[j] << endl;
-            } 
+             
         } 
     }
 }
