@@ -3,6 +3,8 @@ implemented using C++ library injection
 
 To run this project on your own Linux Systems :- 
 
+Build the leakfinder shared library by typing
+
 `
 g++ -shared -fPIC allocation_info.cpp leakfinder.cpp -o leakfinder.so -lpthread -ldl
 `
