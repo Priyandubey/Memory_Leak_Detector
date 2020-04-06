@@ -12,7 +12,7 @@
 
 #include "allocation_info.hpp"
 
-using namespace bornander::memory;
+using namespace myName::memory;
 using namespace std;
 
 static void compile_allocation() __attribute__((destructor));
