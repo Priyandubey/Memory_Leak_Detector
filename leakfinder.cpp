@@ -107,9 +107,9 @@ void compile_allocation()
         for (int i = 0; i < allocations.size(); ++i)
         {
             allocation_info allocation = allocations[i];
-            cout << "Leak " << (i+1) << "@0x" << hex << allocation.get_thread_id() << dec;
+            cout << "Leak " << (i+1) << "@0x" << hex << allocation.get_thread_id();
             cout << "; leaked " << allocation.get_size() << " bytes at position 0x"; 
-            cout << hex << allocation.get_address() << dec << endl; 
+            cout << hex << allocation.get_address() << endl; 
              
         } 
     }
