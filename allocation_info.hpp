@@ -6,7 +6,7 @@
 
 #include <pthread.h>
 
-namespace bornander
+namespace myName
 {
     namespace memory
     {
