@@ -1,6 +1,6 @@
 #include "allocation_info.hpp"
 
-namespace bornander
+namespace myName
 {
   namespace memory
   {
